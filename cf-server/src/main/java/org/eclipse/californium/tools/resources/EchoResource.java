@@ -29,9 +29,9 @@ import org.eclipse.californium.core.server.resources.Resource;
  * This resource responds with the data from a request in its payload. This
  * resource responds to GET, POST, PUT and DELETE requests.
  */
-public class MirrorResource extends CoapResource {
+public class EchoResource extends CoapResource {
 
-	public MirrorResource(String name) {
+	public EchoResource(String name) {
 		super(name);
 	}
 	
@@ -49,12 +49,13 @@ public class MirrorResource extends CoapResource {
 		InetSocketAddress source = request.getSourceContext().getPeerAddress();
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("resource ").append(getURI()).append(" received request")
-			.append("\n").append("Code: ").append(request.getCode())
-			.append("\n").append("Source: ").append(source.getAddress()).append(":").append(source.getPort())
-			.append("\n").append("Type: ").append(request.getType())
-			.append("\n").append("MID: ").append(request.getMID())
-			.append("\n").append("Token: ").append(request.getTokenString())
-			.append("\n").append(request.getOptions());
+				.append("\n").append("Code: ").append(request.getCode())
+				.append("\n").append("Source: ").append(source.getAddress()).append(":").append(source.getPort())
+				.append("\n").append("Type: ").append(request.getType())
+				.append("\n").append("MID: ").append(request.getMID())
+				.append("\n").append("Token: ").append(request.getTokenString())
+				.append("\n").append("REQUEST BODY: ").append(request.getPayloadString())
+				.append("\n").append(request.getOptions());
 		Response response = new Response(ResponseCode.CONTENT);
 		response.setPayload(buffer.toString());
 		response.getOptions().setContentFormat(MediaTypeRegistry.TEXT_PLAIN);

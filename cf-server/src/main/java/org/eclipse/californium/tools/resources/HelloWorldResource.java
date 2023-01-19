@@ -25,11 +25,13 @@ public class HelloWorldResource extends CoapResource {
 
 	public HelloWorldResource(String name) {
 		super(name);
+
+		getAttributes().setTitle("Hello-World Resource");
 	}
 	
 	@Override
 	public void handleGET(CoapExchange exchange) {
-		exchange.respond("hello world");
+		exchange.respond("Hello World!");
 	}
 
 }

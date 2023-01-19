@@ -20,12 +20,7 @@ import org.eclipse.californium.core.coap.Request;
 import org.eclipse.californium.core.coap.Response;
 import org.eclipse.californium.core.config.CoapConfig;
 import org.eclipse.californium.elements.config.UdpConfig;
-import org.eclipse.californium.tools.resources.FibonacciResource;
-import org.eclipse.californium.tools.resources.HelloWorldResource;
-import org.eclipse.californium.tools.resources.ImageResource;
-import org.eclipse.californium.tools.resources.LargeResource;
-import org.eclipse.californium.tools.resources.MirrorResource;
-import org.eclipse.californium.tools.resources.StorageResource;
+import org.eclipse.californium.tools.resources.*;
 
 /**
  * This is an example server that contains a few resources for demonstration.
@@ -42,9 +37,14 @@ public class ExampleServer {
 		server.add(new FibonacciResource("fibonacci"));
 		server.add(new StorageResource("storage"));
 		server.add(new ImageResource("image"));
-		server.add(new MirrorResource("mirror"));
+		server.add(new EchoResource("echo"));
 		server.add(new LargeResource("large"));
-		
+
+		//个人练习增加的
+		server.add(new WritableResource("writeMe", "To Be Replaced!"));
+		server.add(new TimeResource("time"));
+		server.add(new RemovableResource("removeMe", "To Be Deleted!"));
+
 		server.start();
 	}
 	

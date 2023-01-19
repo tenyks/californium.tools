@@ -21,7 +21,7 @@ import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
 /**
- * This resource contains two subresources: shutdown and restart. Send a POST
+ * This resource contains two sub-resources: shutdown and restart. Send a POST
  * request to subresource shutdown to stop the server. Send a POST request to
  * the subresource restart to restart the server.
  */

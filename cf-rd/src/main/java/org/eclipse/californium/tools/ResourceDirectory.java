@@ -63,7 +63,6 @@ public class ResourceDirectory extends CoapServer {
 	}
 
 	public ResourceDirectory() {
-
 		RDResource rdResource = new RDResource();
 
 		// add resources to the server
