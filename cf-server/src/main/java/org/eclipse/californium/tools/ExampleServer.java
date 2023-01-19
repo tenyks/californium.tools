@@ -44,6 +44,7 @@ public class ExampleServer {
 		server.add(new WritableResource("writeMe", "To Be Replaced!"));
 		server.add(new TimeResource("time"));
 		server.add(new RemovableResource("removeMe", "To Be Deleted!"));
+		server.add(new ObservableResource("observeMe"));
 
 		server.start();
 	}
