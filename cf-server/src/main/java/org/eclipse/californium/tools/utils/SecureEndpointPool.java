@@ -24,11 +24,14 @@ import org.eclipse.californium.scandium.config.DtlsConfig;
 import org.eclipse.californium.scandium.config.DtlsConfig.DtlsRole;
 import org.eclipse.californium.scandium.config.DtlsConnectorConfig;
 import org.eclipse.californium.scandium.dtls.CertificateType;
+import org.eclipse.californium.scandium.dtls.pskstore.MultiPskFileStore;
 import org.eclipse.californium.scandium.dtls.x509.SingleCertificateProvider;
 import org.eclipse.californium.scandium.dtls.x509.StaticNewAdvancedCertificateVerifier;
 import org.eclipse.californium.scandium.dtls.x509.StaticNewAdvancedCertificateVerifier.Builder;
+import org.eclipse.californium.scandium.util.SecretUtil;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.cert.Certificate;
 import java.util.concurrent.ScheduledExecutorService;
@@ -119,6 +122,19 @@ public class SecureEndpointPool extends EndpointPool {
 		verifierBuilder.setTrustedCertificates(trustedCertificates);
 		verifierBuilder.setTrustAllRPKs();
 		dtlsConfig.setAdvancedCertificateVerifier(verifierBuilder.build());
+
+		return dtlsConfig;
+	}
+
+	public static DtlsConnectorConfig.Builder setupPSKServer(Configuration config) throws IOException, GeneralSecurityException {
+		MultiPskFileStore pskStore = new MultiPskFileStore();
+
+		pskStore.addKey("Device001", SecretUtil.create("secret001".getBytes(StandardCharsets.UTF_8), "PSK"));
+		pskStore.addKey("Device002", SecretUtil.create("secret002".getBytes(StandardCharsets.UTF_8), "PSK"));
+		pskStore.addKey("Device003", SecretUtil.create("secret003".getBytes(StandardCharsets.UTF_8), "PSK"));
+
+		DtlsConnectorConfig.Builder dtlsConfig = DtlsConnectorConfig.builder(config);
+		dtlsConfig.setAdvancedPskStore(pskStore);
 
 		return dtlsConfig;
 	}

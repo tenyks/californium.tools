@@ -25,12 +25,14 @@ import org.eclipse.californium.elements.config.UdpConfig;
 import org.eclipse.californium.scandium.DTLSConnector;
 import org.eclipse.californium.scandium.config.DtlsConfig;
 import org.eclipse.californium.scandium.config.DtlsConnectorConfig;
+import org.eclipse.californium.scandium.dtls.pskstore.AdvancedSinglePskStore;
 import org.eclipse.californium.tools.resources.*;
 import org.eclipse.californium.tools.utils.SecureEndpointPool;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 
 /**
@@ -71,9 +73,22 @@ public class ExampleServer {
 		server.add(new RemovableResource("removeMe", "To Be Deleted!"));
 		server.add(new ObservableResource("observeMe"));
 
+		server.addEndpoint(buildNotSecurityEndpoint(config, null));
 		server.addEndpoint(buildSecurityEndpoint(config, null));
 
 		server.start();
+	}
+
+	private static CoapEndpoint buildNotSecurityEndpoint(Configuration config, Integer port) {
+		if (port == null) {
+			port = config.get(CoapConfig.COAP_PORT);
+		}
+
+		CoapEndpoint.Builder builder = new CoapEndpoint.Builder();
+		builder.setPort(port);
+		builder.setConfiguration(config);
+
+		return builder.build();
 	}
 
 	private static CoapEndpoint	buildSecurityEndpoint(Configuration config, Integer port) throws IOException, GeneralSecurityException {
@@ -81,8 +96,9 @@ public class ExampleServer {
 			port = config.get(CoapConfig.COAP_SECURE_PORT);
 		}
 
-		DtlsConnectorConfig.Builder builder = SecureEndpointPool.setupServer(config);
+		DtlsConnectorConfig.Builder builder = SecureEndpointPool.setupPSKServer(config);
 		builder.setAddress(new InetSocketAddress(port));
+
 		DTLSConnector connector = new DTLSConnector(builder.build());
 		CoapEndpoint endpoint = CoapEndpoint.builder().setConfiguration(config).setConnector(connector).build();
 
