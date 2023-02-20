@@ -11,7 +11,7 @@
 		<version>3.8.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>tools</artifactId>
+	<artifactId>californium-tools</artifactId>
 	<packaging>pom</packaging>
 
 	<name>Californium (Cf) Tools</name>
