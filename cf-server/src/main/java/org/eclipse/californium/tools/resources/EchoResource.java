@@ -24,6 +24,7 @@ import org.eclipse.californium.core.coap.Response;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.network.Exchange;
 import org.eclipse.californium.core.server.resources.Resource;
+import org.eclipse.californium.tools.SendDelayedCommandInterceptor;
 
 /**
  * This resource responds with the data from a request in its payload. This
@@ -48,17 +49,24 @@ public class EchoResource extends CoapResource {
 		Request request = exchange.getRequest();
 		InetSocketAddress source = request.getSourceContext().getPeerAddress();
 		StringBuilder buffer = new StringBuilder();
+
+		String payloadStr = request.getPayloadString();
 		buffer.append("resource ").append(getURI()).append(" received request")
 				.append("\n").append("Code: ").append(request.getCode())
 				.append("\n").append("Source: ").append(source.getAddress()).append(":").append(source.getPort())
 				.append("\n").append("Type: ").append(request.getType())
 				.append("\n").append("MID: ").append(request.getMID())
 				.append("\n").append("Token: ").append(request.getTokenString())
-				.append("\n").append("REQUEST BODY: ").append(request.getPayloadString())
+				.append("\n").append("REQUEST BODY: ").append(payloadStr)
 				.append("\n").append(request.getOptions());
 		Response response = new Response(ResponseCode.CONTENT);
 		response.setPayload(buffer.toString());
 		response.getOptions().setContentFormat(MediaTypeRegistry.TEXT_PLAIN);
+
+		if (payloadStr.startsWith("HAS_CMD")) {
+			SendDelayedCommandInterceptor.HAS_CMD_FLAG.set(true);
+		}
+
 		exchange.sendResponse(response);
 	}
 }

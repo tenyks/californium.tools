@@ -76,7 +76,9 @@ public class ExampleServer {
 //		wellKnown.add(new DiscoveryResource(server.getRoot()));
 //		server.add(wellKnown);
 
-		server.addEndpoint(buildNotSecurityEndpoint(config, null));
+		CoapEndpoint endpoint = buildNotSecurityEndpoint(config, null);
+		endpoint.addPostProcessInterceptor(new SendDelayedCommandInterceptor(endpoint));
+		server.addEndpoint(endpoint);
 		server.addEndpoint(buildSecurityEndpoint(config, null));
 
 		server.start();
@@ -91,7 +93,9 @@ public class ExampleServer {
 		builder.setPort(port);
 		builder.setConfiguration(config);
 
-		return builder.build();
+		CoapEndpoint rst = builder.build();
+
+		return rst;
 	}
 
 	private static CoapEndpoint	buildSecurityEndpoint(Configuration config, Integer port) throws IOException, GeneralSecurityException {
