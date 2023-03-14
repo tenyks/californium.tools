@@ -13,6 +13,8 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * 参考：
+ * <li>https://blog.csdn.net/llb19900510/article/details/107913255</li>
  * @author 李仲允
  * @date 2023/3/14 22:27
  */
