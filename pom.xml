@@ -9,6 +9,7 @@
 		<groupId>org.eclipse.californium</groupId>
 		<artifactId>cf-bom</artifactId>
 		<version>3.9.0-SNAPSHOT</version>
+		<relativePath />
 	</parent>
 
 	<artifactId>californium-tools</artifactId>
