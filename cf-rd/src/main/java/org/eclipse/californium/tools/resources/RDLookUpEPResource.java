@@ -41,7 +41,6 @@ public class RDLookUpEPResource extends CoapResource {
 		getAttributes().addContentType(MediaTypeRegistry.APPLICATION_LINK_FORMAT);
 	}
 
-
 	@Override
 	public void handleGET(CoapExchange exchange) {
 		Collection<Resource> resources = rdResource.getChildren();

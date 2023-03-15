@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.eclipse.californium.tools;
 
+import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapServer;
 import org.eclipse.californium.core.coap.Request;
 import org.eclipse.californium.core.coap.Response;
@@ -25,6 +26,7 @@ import org.eclipse.californium.elements.config.UdpConfig;
 import org.eclipse.californium.scandium.DTLSConnector;
 import org.eclipse.californium.scandium.config.DtlsConfig;
 import org.eclipse.californium.scandium.config.DtlsConnectorConfig;
+import org.eclipse.californium.tools.interceptors.SendDelayedCommandInterceptor;
 import org.eclipse.californium.tools.resources.*;
 import org.eclipse.californium.tools.utils.SecureEndpointPool;
 
@@ -32,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.security.GeneralSecurityException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * This is an example server that contains a few resources for demonstration.
@@ -57,12 +60,17 @@ public class ExampleServer {
 		Configuration config = Configuration.createWithFile(CONFIG_FILE, CONFIG_HEADER, null);
 
 		CoapServer server = new CoapServer(config);
+		ConcurrentLinkedQueue<String> cmdQueue = new ConcurrentLinkedQueue<>();
+
+		CoapResource tResource = new CoapResource("t");
+		tResource.add(new TRResource("r"));
+		server.add(tResource);
 
 		server.add(new HelloWorldResource("hello"));
 		server.add(new FibonacciResource("fibonacci"));
 		server.add(new StorageResource("storage"));
 		server.add(new ImageResource("image"));
-		server.add(new EchoResource("echo"));
+		server.add(new EchoResource("echo", cmdQueue));
 		server.add(new LargeResource("large"));
 
 		//个人练习增加的
@@ -76,8 +84,12 @@ public class ExampleServer {
 //		wellKnown.add(new DiscoveryResource(server.getRoot()));
 //		server.add(wellKnown);
 
-		server.addEndpoint(buildNotSecurityEndpoint(config, null));
-		server.addEndpoint(buildSecurityEndpoint(config, null));
+		CoapEndpoint endpoint = buildNotSecurityEndpoint(config, 15683);
+		endpoint.addPostProcessInterceptor(new SendDelayedCommandInterceptor(endpoint, cmdQueue));
+
+		server.addEndpoint(endpoint);
+		server.addEndpoint(buildSecurityEndpoint(config, 15684));
+
 
 		server.start();
 	}
